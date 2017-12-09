@@ -20,6 +20,7 @@ composer req profiler
 composer require symfony/maker-bundle
 composer require symfony/web-server-bundle
 composer require sensio/framework-extra-bundle
+composer require symfony/expression-language
 ```
 - Install MySQL
 - Create DB with name shopping_cart or whatever you want and edit the DATABASE_URL in .env file
