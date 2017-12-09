@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Cart
+{% endblock %}
+
+{% block body %}
+
+    <input type="button" onclick="location.href='/products';" value="Go to Products">
+
+    <input type="button" onclick="location.href='/';" value="Go to Home">
+
+    <h1>Cart</h1>
+
+    <table style="width:80%;table-layout:fixed">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+        {% for item in data.items %}
+           <tr>
+                <th>{{item.product.name}}</th>
+                <th>{{item.product.description}}</th>
+                <th>{{item.product.price}}$</th>
+                <th>
+                <div style="margin:5px">
+                    <input id="quantity{{item.id}}" type="number" min="0" max="{{item.product.quantity}}" value="{{item.quantity}}"/>
+                </div>
+                </th>
+                <th>
+                    <button onclick="updateCart({{item.id}})">
+                        Update
+                    </button>
+                    <button onclick="removeCart({{item.id}})">
+                        Remove
+                    </button>
+                </th>
+           </tr>
+
+        {% endfor %}
+    </table>
+    <button style="margin-top:20px" onclick="emptyCart();">
+        Empty Cart
+    </button>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+
+        function updateCart(id)
+        {
+            quantity = $('#quantity'+id).val();
+
+            $.ajax({
+                url: "/cart/update/" + id + "/" + quantity,
+                error: function(requestObject, error, errorThrown) {
+                    alert(error);
+                    alert(errorThrown);
+                },
+                success: function(){alert("cart has been updated");}
+            });
+        }
+        function removeCart(id)
+        {
+            $.ajax({
+                url: "/cart/update/" + id + "/" + 0,
+                error: function(requestObject, error, errorThrown) {
+                    alert(error);
+                    alert(errorThrown);
+                },
+                success: function(){
+                    alert("Item removed!");
+                    location.reload();
+                }
+            });
+        }
+        function emptyCart()
+        {
+             $.ajax({
+                url: "/cart/empty/",
+                error: function(requestObject, error, errorThrown) {
+                    alert(error);
+                    alert(errorThrown);
+                },
+                success: function(){
+                    alert("Cart Cleared!");
+                    location.reload();
+                }
+            });
+        }
+    </script>
+
+{% endblock %}

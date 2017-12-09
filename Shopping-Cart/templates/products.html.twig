@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Products
+{% endblock %}
+
+{% block body %}
+
+    <input type="button" onclick="location.href='/cart';" value="Go to Cart">
+
+    <input type="button" onclick="location.href='/';" value="Go to Home">
+
+    <h1>Products</h1>
+
+    <ol>
+        {% for product in data.products %}
+        <li> 
+            {{product.name}}:
+            <ul>
+                <li>{{product.description}}</li>
+                <li>Quantity: {{product.quantity}}</li>
+                <li>{{product.price}}$</li>
+            </ul>
+        </li>
+        <input id="quantity{{product.id}}" type="number" min="1" max="{{product.quantity}}" value="1"/>
+        <button onclick="addToCart({{product.id}})">
+            Add to Cart
+        </button>
+        {% endfor %}
+    </ol>
+
+    {# <input type="button" style="margin-top:20px" onclick="location.href='/products/new';" value ="Add Product"> #}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+
+        function addToCart(id)
+        {
+            quantity = $('#quantity'+id).val();
+
+            $.ajax({
+                url: "/cart/add/" + id + "/" + quantity,
+                error: function(requestObject, error, errorThrown) {
+                    alert(error);
+                    alert(errorThrown);
+                },
+                success: function(){alert("product has been added");}
+            });
+        }
+    </script>
+
+{% endblock %}
